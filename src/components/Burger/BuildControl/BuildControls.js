@@ -9,11 +9,20 @@ const controls = [
   { label: 'Meat', type: 'meat' },
 ];
 
-export default function BuildControls() {
+export default function BuildControls(props) {
   return (
     <div className='BuildControls'>
+      <p> Current Price: {props.totalPrice} €</p>
       {controls.map((control) => {
-        return <BuildControl label={control.label} key={control.label} />;
+        return (
+          <BuildControl
+            // we are using the arrow function just to pass the type to BuildControl
+            added={() => props.ingredientAdded(control.type)}
+            removed={() => props.ingredientRemoved(control.type)}
+            label={control.label}
+            key={control.label}
+          />
+        );
       })}
     </div>
   );
