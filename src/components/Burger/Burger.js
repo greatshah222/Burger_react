@@ -35,7 +35,7 @@ export default function Burger(props) {
   // console.log(t1);
   return (
     <div className='Burger'>
-      <h1>Hellp</h1>
+      <h5>Bishal's Burger House</h5>
       <BurgerIngredient type='bread-top' />
       {/* we will always bread on top and bottom so in between we will dufferent ingredient */}
       {t1}

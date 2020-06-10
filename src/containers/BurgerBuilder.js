@@ -94,12 +94,20 @@ class BurgerBuilder extends Component {
     this.setState({ showModal: false });
     console.log('clickec');
   };
+  purchaseContinueHandler = () => {
+    alert('thanks');
+  };
 
   render() {
     return (
       <>
         <Modal show={this.state.showModal} hideModal={this.hideModalHandler}>
-          <OrderSummary ingredients={this.state.ingredients} />{' '}
+          <OrderSummary
+            hideModal={this.hideModalHandler}
+            continuePurchase={this.purchaseContinueHandler}
+            ingredients={this.state.ingredients}
+            price={this.state.totalPrice}
+          />{' '}
         </Modal>
 
         <Burger ingredients={this.state.ingredients} />
