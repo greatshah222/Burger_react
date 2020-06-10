@@ -12,7 +12,10 @@ const controls = [
 export default function BuildControls(props) {
   return (
     <div className='BuildControls'>
-      <p> Current Price: {props.totalPrice} €</p>
+      <p>
+        {' '}
+        Current Price: <strong>{props.totalPrice} €</strong>
+      </p>
       {controls.map((control) => {
         return (
           <BuildControl
@@ -24,6 +27,14 @@ export default function BuildControls(props) {
           />
         );
       })}
+      {/* // button should be disabled when false(not purchasable) */}
+      <button
+        className='OrderButton'
+        disabled={!props.purchasable}
+        onClick={props.showModal}
+      >
+        ORDER NOW
+      </button>
     </div>
   );
 }
