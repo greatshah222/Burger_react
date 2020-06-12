@@ -3,6 +3,9 @@ import Burger from '../components/Burger/Burger';
 import BuildControls from '../components/Burger/BuildControl/BuildControls';
 import Modal from '../components/UI/Modal/Modal';
 import OrderSummary from '../components/Burger/OrderSummary/OrderSummary';
+import axios from './../axios-order';
+import Spinner from '../components/UI/Spinner/Spinner';
+import withErrorHandler from '../withErrorHandler/withErrorHandler';
 // price for differrent ingredient
 const INGREDIENT_PRICES = {
   salad: 1,
@@ -23,7 +26,9 @@ class BurgerBuilder extends Component {
     totalPrice: 4,
     // purchasable becomes true once any ingredients has a value of 1
     purchasable: false,
-    ShowSummaryModal: false,
+    showModal: false,
+    // for spinner
+    loading: false,
   };
   updatePurchaseState = () => {
     const ingredients = {
@@ -94,20 +99,48 @@ class BurgerBuilder extends Component {
     this.setState({ showModal: false });
     console.log('clickec');
   };
-  purchaseContinueHandler = () => {
-    alert('thanks');
+  purchaseContinueHandler = async () => {
+    this.setState({ loading: true });
+    const order = {
+      ingredients: this.state.ingredients,
+      price: this.state.totalPrice,
+      // sending dummy order data since at the present we dont have checckout form
+      customer: {
+        name: 'Bishal Shah',
+        address: {
+          street: 'hello 123',
+          zipCode: '88888',
+          country: 'Nepal',
+        },
+        email: 'test@mail.com',
+      },
+      deliveryMethod: 'fastest',
+    };
+    // alert('thanks');
+    // make http request
+    // we have already defined the baseUrl in the axios in axios-order.js we simply need to define the route now which will be appended to the baseurl. for the firebase we need to type .json at the end of the endpoint and the name whatever u give here will be created auto
+    try {
+      await axios.post('/orders.json', order);
+      await this.setState({ loading: false, showModal: false });
+    } catch (error) {
+      await this.setState({ loading: false, showModal: false });
+    }
   };
 
   render() {
     return (
       <>
         <Modal show={this.state.showModal} hideModal={this.hideModalHandler}>
-          <OrderSummary
-            hideModal={this.hideModalHandler}
-            continuePurchase={this.purchaseContinueHandler}
-            ingredients={this.state.ingredients}
-            price={this.state.totalPrice}
-          />{' '}
+          {this.state.loading ? (
+            <Spinner />
+          ) : (
+            <OrderSummary
+              hideModal={this.hideModalHandler}
+              continuePurchase={this.purchaseContinueHandler}
+              ingredients={this.state.ingredients}
+              price={this.state.totalPrice}
+            />
+          )}
         </Modal>
 
         <Burger ingredients={this.state.ingredients} />
@@ -124,4 +157,4 @@ class BurgerBuilder extends Component {
   }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder);
