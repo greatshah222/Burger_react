@@ -9,7 +9,7 @@ export default function NavigationItems() {
       <NavigationItem link='/' active='true'>
         Burger Bulider
       </NavigationItem>
-      <NavigationItem link='/'> Checkout </NavigationItem>
+      <NavigationItem link='/checkout'> Checkout </NavigationItem>
     </ul>
   );
 }
