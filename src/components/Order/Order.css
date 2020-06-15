@@ -1,0 +1,27 @@
+.Order {
+  width: 80%;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 3px #ccc;
+  padding: 10px;
+  margin: 20px auto;
+  box-sizing: border-box;
+}
+.Order-primary {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+.span-ingredient {
+  text-transform: capitalize;
+  border: 1px solid #ccc;
+  padding: 5px;
+}
+.span-ingredient:nth-of-type(odd) {
+  background-color: #ccc;
+}
+.ing-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 80%;
+  margin: auto;
+}

@@ -33,6 +33,9 @@
     padding: 16px 10px;
     border-bottom: 4px solid transparent;
   }
+  .NavigationItem a.active {
+    color: #40a4c8;
+  }
 
   .NavigationItem a:hover,
   .NavigationItem a:active {

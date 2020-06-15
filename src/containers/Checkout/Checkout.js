@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
+
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
+import { ContactData } from './ContactData/ContactData';
 
 export class Checkout extends Component {
   state = {
     ingredients: {
-      salad: 1,
-      cheese: 1,
+      salad: 0,
+      cheese: 0,
       bacon: 0,
       meat: 0,
     },
@@ -32,13 +35,14 @@ export class Checkout extends Component {
      *
      *`
      */
-
-    const ingredients = this.props.location.state.ingredients;
-    const totalPrice = this.props.location.state.totalPrice;
-    await this.setState({
-      ingredients: ingredients,
-      totalPrice: totalPrice,
-    });
+    if (this.props.location.state) {
+      const ingredients = this.props.location.state.ingredients;
+      const totalPrice = this.props.location.state.totalPrice;
+      await this.setState({
+        ingredients: ingredients,
+        totalPrice: totalPrice,
+      });
+    }
   }
   checkoutCancelledHandler = () => {
     this.props.history.goBack();
@@ -54,6 +58,20 @@ export class Checkout extends Component {
           ingredients={this.state.ingredients}
           onCheckoutContinued={this.checkoutContinuedHandler}
           onCheckoutCancelled={this.checkoutCancelledHandler}
+        />
+        {/* // use match.path in route wheras match.url in links */}
+        <Route
+          path={this.props.match.path + '/contact-data'}
+          //   component={ContactData}
+          // this way of rendering component will allow us to pass the state in the <ContactData/>
+          render={(props) => (
+            // we dont have the history and push cause we are using the rendering method instad od component. so u can pass the props so that it can be accessed
+            <ContactData
+              ingredients={this.state.ingredients}
+              totalPrice={this.state.totalPrice}
+              {...props}
+            />
+          )}
         />
       </div>
     );
