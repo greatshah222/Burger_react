@@ -9,7 +9,7 @@ export default function Order(props) {
       </span>
     )
   );
-  console.log(props);
+  console.log(props.order);
 
   return (
     <div className='Order'>

@@ -3,56 +3,38 @@ import Burger from '../components/Burger/Burger';
 import BuildControls from '../components/Burger/BuildControl/BuildControls';
 import Modal from '../components/UI/Modal/Modal';
 import OrderSummary from '../components/Burger/OrderSummary/OrderSummary';
-import axios from './../axios-order';
 import Spinner from '../components/UI/Spinner/Spinner';
 import withErrorHandler from '../withErrorHandler/withErrorHandler';
+import { connect } from 'react-redux';
 // price for differrent ingredient
-const INGREDIENT_PRICES = {
-  salad: 1,
-  cheese: 2,
-  meat: 3,
-  bacon: 2,
-};
 
 class BurgerBuilder extends Component {
   state = {
-    // ingredients: {
-    //   salad: 0,
-    //   bacon: 0,
-    //   cheese: 0,
-    //   meat: 0,
-    // },
-    // we want to fetch our ingredients state from db so set it to null initially
-    ingredients: null,
-    // base price for burger
-    totalPrice: 4,
-    // purchasable becomes true once any ingredients has a value of 1
-    purchasable: false,
     showModal: false,
     // for spinner
     loading: false,
     error: false,
   };
 
-  componentDidMount = async () => {
-    try {
-      const ingredients = await axios.get(
-        'https://vidly-10b0b.firebaseio.com/ingredients.json'
-      );
-      await this.setState({
-        ingredients: ingredients.data,
-      });
-      console.log(ingredients.data);
-    } catch (error) {
-      this.setState({ error: true });
-    }
-    // await this.setState({
-    //   ingredients: ingredients,
-    // });
-  };
+  // componentDidMount = async () => {
+  //   try {
+  //     const ingredients = await axios.get(
+  //       'https://vidly-10b0b.firebaseio.com/ingredients.json'
+  //     );
+  //     await this.setState({
+  //       ingredients: ingredients.data,
+  //     });
+  //     console.log(ingredients.data);
+  //   } catch (error) {
+  //     this.setState({ error: true });
+  //   }
+  //   // await this.setState({
+  //   //   ingredients: ingredients,
+  //   // });
+  // };
   updatePurchaseState = () => {
     const ingredients = {
-      ...this.state.ingredients,
+      ...this.props.ings,
     };
     // again taling the array of just values
     const transformedIngredientsValue = Object.values(ingredients);
@@ -61,56 +43,57 @@ class BurgerBuilder extends Component {
       (acc, cur) => acc + cur
     );
     //console.log(checkForTotalValueInIngredients);
-    if (checkForTotalValueInIngredients > 0) {
-      this.setState({ purchasable: true });
-    } else if (checkForTotalValueInIngredients <= 0) {
-      this.setState({ purchasable: false });
-    }
+    // if (checkForTotalValueInIngredients > 0) {
+    //   this.setState({ purchasable: true });
+    // } else if (checkForTotalValueInIngredients <= 0) {
+    //   this.setState({ purchasable: false });
+    // }
+    return checkForTotalValueInIngredients;
     //console.log(this.state.purchasable);
     // if sum = 0 then text
   };
-  addIngredientHandler = async (type) => {
-    const oldCount = this.state.ingredients[type];
-    const updataedCount = oldCount + 1;
-    const updatedIngredient = { ...this.state.ingredients };
-    updatedIngredient[type] = updataedCount;
-    // increasing the price fo reach added item
+  // addIngredientHandler = async (type) => {
+  //   const oldCount = this.state.ingredients[type];
+  //   const updataedCount = oldCount + 1;
+  //   const updatedIngredient = { ...this.state.ingredients };
+  //   updatedIngredient[type] = updataedCount;
+  //   // increasing the price fo reach added item
 
-    const priceAddition = INGREDIENT_PRICES[type];
-    const oldPrice = this.state.totalPrice;
-    const newPrice = oldPrice + priceAddition;
+  //   const priceAddition = INGREDIENT_PRICES[type];
+  //   const oldPrice = this.state.totalPrice;
+  //   const newPrice = oldPrice + priceAddition;
 
-    await this.setState({
-      ingredients: updatedIngredient,
-      totalPrice: newPrice,
-    });
-    this.updatePurchaseState();
-  };
-  removeIngredientHandler = async (type) => {
-    const oldCount = this.state.ingredients[type];
-    console.log(oldCount);
-    if (oldCount > 0) {
-      const updatedCount = oldCount - 1;
-      const updatedIngredient = { ...this.state.ingredients };
-      updatedIngredient[type] = updatedCount;
+  //   await this.setState({
+  //     ingredients: updatedIngredient,
+  //     totalPrice: newPrice,
+  //   });
+  //   this.updatePurchaseState();
+  // };
+  // removeIngredientHandler = async (type) => {
+  //   const oldCount = this.state.ingredients[type];
+  //   console.log(oldCount);
+  //   if (oldCount > 0) {
+  //     const updatedCount = oldCount - 1;
+  //     const updatedIngredient = { ...this.state.ingredients };
+  //     updatedIngredient[type] = updatedCount;
 
-      // price
-      const priceDeduction = INGREDIENT_PRICES[type];
-      // console.log(priceDeduction);
-      const oldPrice = this.state.totalPrice;
-      // console.log(oldPrice);
-      const newPrice = oldPrice - priceDeduction;
-      // console.log(newPrice);
-      await this.setState({
-        ingredients: updatedIngredient,
-        totalPrice: newPrice,
-      });
-    }
-    if (oldCount === 0) {
-      alert('cannot remove');
-    }
-    this.updatePurchaseState();
-  };
+  //     // price
+  //     const priceDeduction = INGREDIENT_PRICES[type];
+  //     // console.log(priceDeduction);
+  //     const oldPrice = this.state.totalPrice;
+  //     // console.log(oldPrice);
+  //     const newPrice = oldPrice - priceDeduction;
+  //     // console.log(newPrice);
+  //     await this.setState({
+  //       ingredients: updatedIngredient,
+  //       totalPrice: newPrice,
+  //     });
+  //   }
+  //   if (oldCount === 0) {
+  //     alert('cannot remove');
+  //   }
+  //   this.updatePurchaseState();
+  // };
   summaryModalHandler = () => {
     this.setState({ showModal: true });
     console.log('clickec');
@@ -186,21 +169,23 @@ This is using query Params
      * This is using second way easier
      */
 
-    const stateData = {
-      ingredients: this.state.ingredients,
-      totalPrice: this.state.totalPrice,
-    };
+    // const stateData = {
+    //   ingredients: this.state.ingredients,
+    //   totalPrice: this.state.totalPrice,
+    // };
+    // now handled by redux
+
     // this can be accessesd in the Checkout.js
     this.props.history.push({
       pathname: '/checkout',
-      state: stateData,
+      // state: stateData,
     });
   };
 
   render() {
     return (
       <>
-        {this.state.ingredients ? (
+        {this.props.ings ? (
           <Modal show={this.state.showModal} hideModal={this.hideModalHandler}>
             {this.state.loading ? (
               <Spinner />
@@ -208,23 +193,23 @@ This is using query Params
               <OrderSummary
                 hideModal={this.hideModalHandler}
                 continuePurchase={this.purchaseContinueHandler}
-                ingredients={this.state.ingredients}
-                price={this.state.totalPrice}
+                ingredients={this.props.ings}
+                price={this.props.totalPrice}
               />
             )}
           </Modal>
         ) : null}
-        {!this.state.ingredients ? (
+        {!this.props.ings ? (
           <Spinner />
         ) : (
           <>
-            <Burger ingredients={this.state.ingredients} />
+            <Burger ingredients={this.props.ings} />
 
             <BuildControls
-              purchasable={this.state.purchasable}
-              ingredientAdded={this.addIngredientHandler}
-              ingredientRemoved={this.removeIngredientHandler}
-              totalPrice={this.state.totalPrice}
+              purchasable={this.updatePurchaseState()}
+              ingredientAdded={this.props.onIngredientAdded}
+              ingredientRemoved={this.props.onIngredientRemoved}
+              totalPrice={this.props.totalPrice}
               showModal={this.summaryModalHandler}
             />
           </>
@@ -233,5 +218,79 @@ This is using query Params
     );
   }
 }
+// redux
+const mapStateToProps = (state) => {
+  // getting the state as ings from the reducer. possible because of connect
+  return {
+    ings: state.ingredients,
+    totalPrice: state.totalPrice,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // put the two function for adding and removing the ingredients
+    onIngredientAdded: (ingName) => {
+      // this function aldo requires the payload that is the name of the ingredient
+      return dispatch({
+        type: 'ADD_INGREDIENT',
+        ingredientName: ingName,
+      });
+    },
+    onIngredientRemoved: (ingName) => {
+      // this function aldo requires the payload that is the name of the ingredient
+      return dispatch({
+        type: 'REMOVE_INGREDIENT',
+        ingredientName: ingName,
+      });
+    },
+  };
+};
+// EXPLIANED HOW THE CONNECT WORKS BELOW
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(BurgerBuilder));
 
-export default withErrorHandler(BurgerBuilder);
+/**
+ * 
+ * 
+ * 
+ * 
+ * Hi!
+
+This is normal JS syntax, applying parameters partially.
+
+It's always useful to look at a simple example:
+
+function add(a) {
+  return function(b) {
+    return function(c) {
+      return a + b + c;
+    }
+  }
+}
+ 
+console.log(add(4)(7)(5));   // 16
+Or the same in ES6 syntax:
+
+const add = a => b => c => a + b + c;
+ 
+console.log(add(4)(7)(5));   // 16
+The output is the same as if you would just have written:
+
+function add(a, b, c) {
+ return a + b + c
+}
+ 
+console.log(add(4, 7, 5));   // 16
+... or (ES6):
+
+const add = (a, b, c) => a + b + c;
+But the advantage of the nested version is that you can apply the parameters partially, and you can create composed functions in this way. See these examples:
+
+const add_4 = add(4);
+console.log(add_4(7)(5));    // 16
+ 
+const add_4_7 = add_4(7);
+console.log(add_4_7(5));     // 16
+ */

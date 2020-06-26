@@ -5,11 +5,10 @@ import Button from '../../../components/UI/Button/Button';
 import './ContactData.css';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Forms/Input/Input';
+import { connect } from 'react-redux';
 
-export class ContactData extends Component {
+class ContactData extends Component {
   state = {
-    ingredients: null,
-    price: '',
     orderForm: {
       name: {
         elementType: 'input',
@@ -104,14 +103,14 @@ export class ContactData extends Component {
     console.log(formData);
     await this.setState({
       loading: true,
-      ingredients: this.props.ingredients,
-      price: this.props.totalPrice,
     });
     const order = {
-      ingredients: this.props.ingredients,
+      ingredients: this.props.ings,
       price: this.props.totalPrice,
       orderData: formData,
     };
+    console.log(this.props);
+    console.log(order);
 
     // make http request
     // we have already defined the baseUrl in the axios in axios-order.js we simply need to define the route now which will be appended to the baseurl. for the firebase we need to type .json at the end of the endpoint and the name whatever u give here will be created auto
@@ -233,4 +232,11 @@ export class ContactData extends Component {
   }
 }
 
-export default ContactData;
+const mapStateToProps = (state) => {
+  return {
+    ings: state.ingredients,
+    totalPrice: state.totalPrice,
+  };
+};
+
+export default connect(mapStateToProps)(ContactData);
