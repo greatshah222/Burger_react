@@ -1,3 +1,4 @@
+import * as actionTypes from '../actions/actionType';
 // price for differrent ingredient
 const INGREDIENT_PRICES = {
   salad: 1,
@@ -6,18 +7,14 @@ const INGREDIENT_PRICES = {
   bacon: 2,
 };
 const initialState = {
-  ingredients: {
-    salad: 0,
-    bacon: 0,
-    cheese: 0,
-    meat: 0,
-  },
+  ingredients: null,
   totalPrice: 4,
+  error: false,
 };
 
-export const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'ADD_INGREDIENT':
+    case actionTypes.ADD_INGREDIENT:
       return {
         ...state,
         // here we will get the [] from our action in dispatch and the value will be changed.and also we put [action.ingredientName] cause we only want to update its value
@@ -28,7 +25,7 @@ export const reducer = (state = initialState, action) => {
         },
         totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
       };
-    case 'REMOVE_INGREDIENT':
+    case actionTypes.REMOVE_INGREDIENT:
       return {
         ...state,
         ingredients: {
@@ -36,7 +33,21 @@ export const reducer = (state = initialState, action) => {
           [action.ingredientName]: state.ingredients[action.ingredientName] - 1,
         },
       };
+    case actionTypes.SET_INGREDIENTS:
+      return {
+        ...state,
+        ingredients: action.ingredients,
+        error: false,
+        totalPrice: 4,
+      };
+    case actionTypes.FETCH_INGREDIENTS_FAILED:
+      return {
+        ...state,
+        error: true,
+      };
     default:
       return state;
   }
 };
+
+export default reducer;

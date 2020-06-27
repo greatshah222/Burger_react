@@ -1,22 +1,11 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from './ContactData/ContactData';
 import { connect } from 'react-redux';
 
 export class Checkout extends Component {
-  // async componentDidMount() {
-  //   // if (this.props.location.state) {
-  //   //   const ingredients = this.props.location.state.ingredients;
-  //   //   const totalPrice = this.props.location.state.totalPrice;
-  //   //   await this.setState({
-  //   //     ingredients: ingredients,
-  //   //     totalPrice: totalPrice,
-  //   //   });
-  //   // }
-  //   // using redux instead of query param to get the state
-  // }
   checkoutCancelledHandler = () => {
     this.props.history.goBack();
   };
@@ -27,11 +16,16 @@ export class Checkout extends Component {
   render() {
     return (
       <div>
-        <CheckoutSummary
-          ingredients={this.props.ings}
-          onCheckoutContinued={this.checkoutContinuedHandler}
-          onCheckoutCancelled={this.checkoutCancelledHandler}
-        />
+        {this.props.ings && !this.props.purchased ? (
+          <CheckoutSummary
+            ingredients={this.props.ings}
+            onCheckoutContinued={this.checkoutContinuedHandler}
+            onCheckoutCancelled={this.checkoutCancelledHandler}
+          />
+        ) : (
+          <Redirect to='/' />
+        )}
+
         {/* // use match.path in route wheras match.url in links */}
         {/* <Route
           path={this.props.match.path + '/contact-data'}
@@ -58,9 +52,11 @@ export class Checkout extends Component {
 const mapStateToProps = (state) => {
   // getting the state as ings from the reducer. possible because of connect
   return {
-    ings: state.ingredients,
-    totalPrice: state.totalPrice,
+    ings: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    purchased: state.order.purchased,
   };
 };
-// since we dont have anything to dispatch we dont have tp pass dispatch in the connect and simmillarlt if we dont need mapStateToProps but need the second one pass the first arg as null
+
+// if  we dont have anything to dispatch we dont have to pass  dispatch in the connect.simmillarly  if we dont need mapStateToProps but need the second one pass the first arg as null
 export default connect(mapStateToProps)(Checkout);

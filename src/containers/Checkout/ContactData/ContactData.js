@@ -6,6 +6,8 @@ import './ContactData.css';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Forms/Input/Input';
 import { connect } from 'react-redux';
+import withErrorHandler from '../../../withErrorHandler/withErrorHandler';
+import * as actions from '../../../store/actions/index';
 
 class ContactData extends Component {
   state = {
@@ -89,8 +91,6 @@ class ContactData extends Component {
         value: 'fastest',
       },
     },
-
-    loading: false,
   };
 
   orderHandler = async (e) => {
@@ -100,29 +100,13 @@ class ContactData extends Component {
     Object.keys(this.state.orderForm).map((el) => {
       return (formData[el] = this.state.orderForm[el].value);
     });
-    console.log(formData);
-    await this.setState({
-      loading: true,
-    });
+
     const order = {
       ingredients: this.props.ings,
       price: this.props.totalPrice,
       orderData: formData,
     };
-    console.log(this.props);
-    console.log(order);
-
-    // make http request
-    // we have already defined the baseUrl in the axios in axios-order.js we simply need to define the route now which will be appended to the baseurl. for the firebase we need to type .json at the end of the endpoint and the name whatever u give here will be created auto
-    try {
-      await axios.post('/orders.json', order);
-      await this.setState({ loading: false });
-      this.props.history.push('/');
-      // we dont have the history and push cause we are using the rendering method instad od component. so u can pass the props so that it can be accessed
-    } catch (error) {
-      await this.setState({ loading: false });
-      this.props.history.push('/');
-    }
+    this.props.onOrderBurger(order);
   };
 
   // for validation
@@ -200,7 +184,7 @@ class ContactData extends Component {
     return (
       <div className='ContactData'>
         <h4>Enter your Contact data</h4>
-        {this.state.loading ? (
+        {this.props.loading ? (
           <Spinner />
         ) : (
           <form onSubmit={this.orderHandler}>
@@ -234,9 +218,19 @@ class ContactData extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    ings: state.ingredients,
-    totalPrice: state.totalPrice,
+    ings: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    loading: state.order.loading,
   };
 };
 
-export default connect(mapStateToProps)(ContactData);
+export const mapDispatchToProps = (dispatch) => {
+  return {
+    onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(ContactData));
