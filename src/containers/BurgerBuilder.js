@@ -34,18 +34,15 @@ class BurgerBuilder extends Component {
 
   summaryModalHandler = () => {
     this.setState({ showModal: true });
-    console.log('clickec');
   };
   hideModalHandler = () => {
     this.setState({ showModal: false });
-    console.log('clickec');
   };
   purchaseContinueHandler = async () => {
     this.props.onInitPurchase();
     // this can be accessesd in the Checkout.js
     this.props.history.push({
       pathname: '/checkout',
-      // state: stateData,
     });
   };
 

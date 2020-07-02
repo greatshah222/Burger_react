@@ -37,7 +37,6 @@ export const initIngredients = () => {
         'https://vidly-10b0b.firebaseio.com/ingredients.json'
       );
       await dispatch(setIngredients(ingredients.data));
-      console.log(ingredients.data);
     } catch (error) {
       await dispatch(fetchIngredientsFailed());
     }

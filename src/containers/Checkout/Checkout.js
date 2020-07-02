@@ -26,21 +26,6 @@ export class Checkout extends Component {
           <Redirect to='/' />
         )}
 
-        {/* // use match.path in route wheras match.url in links */}
-        {/* <Route
-          path={this.props.match.path + '/contact-data'}
-          //   component={ContactData}
-          // this way of rendering component will allow us to pass the state in the <ContactData/>
-          render={(props) => (
-            // we dont have the history and push cause we are using the rendering method instad od component. so u can pass the props so that it can be accessed
-            <ContactData
-              ingredients={this.props.ings}
-              totalPrice={this.props.totalPrice}
-              {...props}
-            />
-          )}
-        /> */}
-
         <Route
           path={this.props.match.path + '/contact-data'}
           component={ContactData}

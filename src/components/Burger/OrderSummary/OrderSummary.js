@@ -2,7 +2,6 @@ import React from 'react';
 import './OrderSummary.css';
 import Button from '../../UI/Button/Button';
 export default function OrderSummary(props) {
-  console.log(props);
   // it will be like salad:2, bacon:3 etc
 
   const ingredientSummary = Object.keys(props.ingredients).map((ingredient) => (
@@ -11,7 +10,6 @@ export default function OrderSummary(props) {
       {props.ingredients[ingredient]}
     </li>
   ));
-  console.log(ingredientSummary);
   return (
     <div>
       <>
@@ -25,7 +23,6 @@ export default function OrderSummary(props) {
         </Button>
         {/* // using the button component not button of html */}
         <Button btnType='Button Danger' clicked={props.hideModal}>
-          {' '}
           CANCEL
         </Button>
       </>

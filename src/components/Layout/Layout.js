@@ -8,10 +8,9 @@ export class Layout extends Component {
     showSideBar: false,
   };
   sideBarClosehandler = () => {
-    console.log('clicked');
     this.setState({
       showSideBar: false,
-    });
+    }); 
   };
   toggleSideBarHandler = () => {
     this.setState({

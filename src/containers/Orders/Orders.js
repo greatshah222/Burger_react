@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import Spinner from '../../components/UI/Spinner/Spinner';
 
 class Orders extends Component {
-  async componentDidMount() {
+  componentDidMount() {
     this.props.onFetchOrder();
   }
   render() {
@@ -17,12 +17,7 @@ class Orders extends Component {
       ));
     }
     console.log(this.props);
-    return (
-      <div>
-        {/* {this.props.orders ? { orders } : null} */}
-        {orders}
-      </div>
-    );
+    return <div>{orders}</div>;
   }
 }
 
