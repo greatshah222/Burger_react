@@ -66,12 +66,19 @@ export const fetchOrdersStart = () => {
     type: actionTypes.FETCH_ORDER_START,
   };
 };
-export const fetchOrders = (token) => {
+export const fetchOrders = (token, userId) => {
   return async (dispatch) => {
     dispatch(fetchOrdersStart());
     try {
+      // orderBy means it will fetch to result which matches the userId . these are firebase method
       // adding login token
-      const res = await axios.get('/orders.json?auth=' + token);
+      const res = await axios.get(
+        '/orders.json?auth=' +
+          token +
+          '&orderBy="userId"&equalTo="' +
+          userId +
+          '"'
+      );
       await dispatch(fetchOrdersSuccess(res.data));
       console.log(res.data);
     } catch (error) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BurgerIngredient } from './BurgerIngredients/BurgerIngredient';
-import './Burger.css';
+import classes from './Burger.module.css';
 
 export default function Burger(props) {
   //   Object.keys(props.ingredients) gives an array of ingredients(only key of key value pair so it give salad,bacon,cheese,meat not their number) since the original ingredient are object we need to xonvert them to array
@@ -34,7 +34,7 @@ export default function Burger(props) {
   // console.log(transformedIngredients);
   // console.log(t1);
   return (
-    <div className='Burger'>
+    <div className={classes.Burger}>
       <h5>Bishal's Burger House</h5>
       <BurgerIngredient type='bread-top' />
       {/* we will always bread on top and bottom so in between we will dufferent ingredient */}

@@ -10,22 +10,33 @@ import { connect } from 'react-redux';
 import * as actions from './store/actions/index';
 import NotFoundPage from './components/UI/NotFound/NotFoundPage';
 class App extends Component {
+  // we put this state to allow first the user is authenticated or not . cause the user is authenticates checks place first in componentDidMount and we might be rediredted before the componentDidMount takes place
+  state = {
+    tokenChecked: false,
+  };
   componentDidMount() {
     this.props.isLoggedIn();
+    this.setState({
+      tokenChecked: true,
+    });
     console.log('object');
   }
   render() {
     console.log(this.props);
-    let route = (
-      <Switch>
-        <Route path='/auth' component={Auth} />
-        <Route path='/not-found' component={NotFoundPage} />
+    let route = null;
+    if (this.state.tokenChecked) {
+      route = (
+        <Switch>
+          <Route path='/auth' component={Auth} />
+          <Route path='/not-found' component={NotFoundPage} />
 
-        <Route path='/' exact component={BurgerBuilder} />
-        <Redirect to='/not-found' />
-      </Switch>
-    );
-    if (this.props.token) {
+          <Route path='/' exact component={BurgerBuilder} />
+          <Redirect to='/not-found' />
+        </Switch>
+      );
+    }
+
+    if (this.state.tokenChecked && this.props.token) {
       route = (
         <Switch>
           <Route path='/auth' component={Auth} />

@@ -17,7 +17,7 @@ export default function SideBar(props) {
       <div className={`SideBar ${classShowingSideBar}`}>
         <Logo />{' '}
         <nav>
-          <NavigationItems />
+          <NavigationItems hideModal={props.closeSideBar} />
         </nav>
       </div>
     </>
