@@ -10,6 +10,8 @@ const initialState = {
   ingredients: null,
   totalPrice: 4,
   error: false,
+  // this building is for login page. the login page causes the redirect but we will check if there is building then it will not cause redirect
+  building: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -24,6 +26,7 @@ const reducer = (state = initialState, action) => {
           [action.ingredientName]: state.ingredients[action.ingredientName] + 1,
         },
         totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+        building: true,
       };
     case actionTypes.REMOVE_INGREDIENT:
       return {
@@ -32,6 +35,7 @@ const reducer = (state = initialState, action) => {
           ...state.ingredients,
           [action.ingredientName]: state.ingredients[action.ingredientName] - 1,
         },
+        building: true,
       };
     case actionTypes.SET_INGREDIENTS:
       return {
@@ -39,6 +43,8 @@ const reducer = (state = initialState, action) => {
         ingredients: action.ingredients,
         error: false,
         totalPrice: 4,
+        // mounting of ingredient from the server
+        building: true,
       };
     case actionTypes.FETCH_INGREDIENTS_FAILED:
       return {

@@ -10,7 +10,7 @@ export class Layout extends Component {
   sideBarClosehandler = () => {
     this.setState({
       showSideBar: false,
-    }); 
+    });
   };
   toggleSideBarHandler = () => {
     this.setState({

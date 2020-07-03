@@ -33,7 +33,15 @@ class BurgerBuilder extends Component {
   };
 
   summaryModalHandler = () => {
-    this.setState({ showModal: true });
+    // if user is authenticated show modal else show login page
+    if (this.props.token) {
+      this.setState({ showModal: true });
+    } else {
+      this.props.onSetAuthRedirectPath('/checkout');
+      // first we are storing the url in redux state where we want to go after authentication which is /checkout .
+      // before that we will push to /auth for authentication
+      this.props.history.push('/auth');
+    }
   };
   hideModalHandler = () => {
     this.setState({ showModal: false });
@@ -86,6 +94,7 @@ const mapStateToProps = (state) => {
     ings: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     error: state.burgerBuilder.error,
+    token: state.auth.token !== null,
   };
 };
 // here we have used action creator so that we  can do async code
@@ -98,6 +107,7 @@ const mapDispatchToProps = (dispatch) => {
     onInitIngredients: () => dispatch(actions.initIngredients()),
     // after the purchase is complete to direct the user
     onInitPurchase: () => dispatch(actions.purchaseInt()),
+    onSetAuthRedirectPath: (url) => dispatch(actions.setAuthRedirectPath(url)),
   };
 };
 

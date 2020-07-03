@@ -21,7 +21,7 @@ export const purchaseBurgerStart = () => {
   };
 };
 
-export const purchaseBurger = (orderData) => {
+export const purchaseBurger = (orderData, token) => {
   // possible cause of thunk
 
   // we have already defined the baseUrl in the axios in axios-order.js we simply need to define the route now which will be appended to the baseurl. for the firebase we need to type .json at the end of the endpoint and the name whatever u give here will be created auto
@@ -29,7 +29,7 @@ export const purchaseBurger = (orderData) => {
   return async (dispatch) => {
     dispatch(purchaseBurgerStart());
     try {
-      const res = await axios.post('/orders.json', orderData);
+      const res = await axios.post('/orders.json?auth=' + token, orderData);
 
       // pass id and orderData
       await dispatch(purchaseBurgerSuccess(res.data.name, orderData));
@@ -66,12 +66,12 @@ export const fetchOrdersStart = () => {
     type: actionTypes.FETCH_ORDER_START,
   };
 };
-
-export const fetchOrders = () => {
+export const fetchOrders = (token) => {
   return async (dispatch) => {
     dispatch(fetchOrdersStart());
     try {
-      const res = await axios.get('/orders.json');
+      // adding login token
+      const res = await axios.get('/orders.json?auth=' + token);
       await dispatch(fetchOrdersSuccess(res.data));
       console.log(res.data);
     } catch (error) {
