@@ -103,14 +103,12 @@ export const setAuthRedirectPath = (url) => {
 export const isLoggedIn = () => {
   return (dispatch) => {
     const token = Cookies.get('jwt');
-    console.log(token);
     if (!token) {
       return;
     } else {
       const ext = new Date(Cookies.get('ext'));
       const expirationTime = (ext.getTime() - new Date().getTime()) / 1000;
 
-      console.log(expirationTime);
       if (ext > new Date()) {
         const userId = Cookies.get('userId');
         dispatch(authSuccess(token, userId));

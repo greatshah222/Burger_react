@@ -1,5 +1,5 @@
 import React from 'react';
-import { BurgerIngredient } from './BurgerIngredients/BurgerIngredient';
+import BurgerIngredient from './BurgerIngredients/BurgerIngredient';
 import classes from './Burger.module.css';
 
 export default function Burger(props) {

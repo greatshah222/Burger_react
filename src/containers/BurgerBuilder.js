@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import Burger from '../components/Burger/Burger';
 import BuildControls from '../components/Burger/BuildControl/BuildControls';
 import Modal from '../components/UI/Modal/Modal';
@@ -9,18 +9,16 @@ import { connect } from 'react-redux';
 
 import * as actions from './../store/actions/index';
 
-class BurgerBuilder extends Component {
-  state = {
-    showModal: false,
-  };
-  componentDidMount() {
-    // loading ingredients from firebase
-    this.props.onInitIngredients();
-  }
+function BurgerBuilder(props) {
+  const { onInitIngredients } = props;
+  const [showModal, setShowModal] = useState(false);
+  useEffect(() => {
+    onInitIngredients();
+  }, [onInitIngredients]);
 
-  updatePurchaseState = () => {
+  const updatePurchaseState = () => {
     const ingredients = {
-      ...this.props.ings,
+      ...props.ings,
     };
     // again taling the array of just values
     const transformedIngredientsValue = Object.values(ingredients);
@@ -32,61 +30,59 @@ class BurgerBuilder extends Component {
     return checkForTotalValueInIngredients;
   };
 
-  summaryModalHandler = () => {
+  const summaryModalHandler = () => {
     // if user is authenticated show modal else show login page
-    if (this.props.token) {
-      this.setState({ showModal: true });
+    if (props.token) {
+      setShowModal(true);
     } else {
-      this.props.onSetAuthRedirectPath('/checkout');
+      props.onSetAuthRedirectPath('/checkout');
       // first we are storing the url in redux state where we want to go after authentication which is /checkout .
       // before that we will push to /auth for authentication
-      this.props.history.push('/auth');
+      props.history.push('/auth');
     }
   };
-  hideModalHandler = () => {
-    this.setState({ showModal: false });
+  const hideModalHandler = () => {
+    setShowModal(false);
   };
-  purchaseContinueHandler = async () => {
-    this.props.onInitPurchase();
+  const purchaseContinueHandler = async () => {
+    props.onInitPurchase();
     // this can be accessesd in the Checkout.js
-    this.props.history.push({
+    props.history.push({
       pathname: '/checkout',
     });
   };
 
-  render() {
-    console.log(this.props);
-    return (
-      <>
-        {this.props.ings ? (
-          <Modal show={this.state.showModal} hideModal={this.hideModalHandler}>
-            <OrderSummary
-              hideModal={this.hideModalHandler}
-              continuePurchase={this.purchaseContinueHandler}
-              ingredients={this.props.ings}
-              price={this.props.totalPrice}
-            />
-          </Modal>
-        ) : null}
-        {!this.props.ings ? (
-          <Spinner />
-        ) : (
-          <>
-            <Burger ingredients={this.props.ings} />
+  return (
+    <>
+      {props.ings ? (
+        <Modal show={showModal} hideModal={hideModalHandler}>
+          <OrderSummary
+            hideModal={hideModalHandler}
+            continuePurchase={purchaseContinueHandler}
+            ingredients={props.ings}
+            price={props.totalPrice}
+          />
+        </Modal>
+      ) : null}
+      {!props.ings ? (
+        <Spinner />
+      ) : (
+        <>
+          <Burger ingredients={props.ings} />
 
-            <BuildControls
-              purchasable={this.updatePurchaseState()}
-              ingredientAdded={this.props.onIngredientAdded}
-              ingredientRemoved={this.props.onIngredientRemoved}
-              totalPrice={this.props.totalPrice}
-              showModal={this.summaryModalHandler}
-            />
-          </>
-        )}
-      </>
-    );
-  }
+          <BuildControls
+            purchasable={updatePurchaseState()}
+            ingredientAdded={props.onIngredientAdded}
+            ingredientRemoved={props.onIngredientRemoved}
+            totalPrice={props.totalPrice}
+            showModal={summaryModalHandler}
+          />
+        </>
+      )}
+    </>
+  );
 }
+
 // redux
 const mapStateToProps = (state) => {
   // getting the state as ings from the reducer. possible because of connect

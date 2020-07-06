@@ -1,37 +1,28 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import '../Layout/Layout.css';
 import Toolbar from '../Navigation/ToolBar/Toolbar';
 import SideBar from '../Navigation/SideBar/SideBar';
 
-export class Layout extends Component {
-  state = {
-    showSideBar: false,
-  };
-  sideBarClosehandler = () => {
-    this.setState({
-      showSideBar: false,
-    });
-  };
-  toggleSideBarHandler = () => {
-    this.setState({
-      showSideBar: !this.state.showSideBar,
-    });
-  };
-  render() {
-    return (
-      <>
-        {/* toolbar consist navigation and logo */}
-        <Toolbar openSideBar={this.toggleSideBarHandler} />
-        {/* side bar only shown in mobile devices */}
-        <SideBar
-          closeSideBar={this.sideBarClosehandler}
-          openSideBar={this.state.showSideBar}
-        />
+function Layout(props) {
+  const [showSideBar, setshowSideBar] = useState(false);
 
-        <main className='Content'>{this.props.children}</main>
-      </>
-    );
-  }
+  const sideBarClosehandler = () => {
+    setshowSideBar(false);
+  };
+  const toggleSideBarHandler = () => {
+    setshowSideBar((prevState) => !prevState);
+  };
+
+  return (
+    <>
+      {/* toolbar consist navigation and logo */}
+      <Toolbar openSideBar={toggleSideBarHandler} />
+      {/* side bar only shown in mobile devices */}
+      <SideBar closeSideBar={sideBarClosehandler} openSideBar={showSideBar} />
+
+      <main className='Content'>{props.children}</main>
+    </>
+  );
 }
 
 export default Layout;
